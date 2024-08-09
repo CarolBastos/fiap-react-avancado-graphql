@@ -1,8 +1,12 @@
 import { useState } from "react"
 import { Card, Form, Heading, Input, Label, Select } from "./styles"
 import { Button } from "../Button"
+import { useQuery } from "@apollo/client"
+import { GET_TRANSACTION_TYPES } from "../../queries/getTransactioTypes"
 
 export const TransactionForm = () => {
+
+    const { data } = useQuery(GET_TRANSACTION_TYPES)
 
     const [transactionType, setTransactionType] = useState('')
     const [transactionValue, setSetTransactionValue] = useState('')
@@ -29,6 +33,7 @@ export const TransactionForm = () => {
                     <option value="" disabled hidden>
                         Selecione o tipo de transação
                     </option>
+                    {data?.getTransactionTypes.map( t => <option key={t.value} value={t.value} > {t.display} </option> )}
                 </Select>
                 <div>
                     <Label>
