@@ -1,22 +1,39 @@
 import { useState } from "react"
 import { Card, Form, Heading, Input, Label, Select } from "./styles"
 import { Button } from "../Button"
-import { useQuery } from "@apollo/client"
+import { useMutation, useQuery } from "@apollo/client"
 import { GET_TRANSACTION_TYPES } from "../../queries/getTransactioTypes"
+import { ADD_TRANSACTION } from "../../mutations/addTransaction"
+import { GET_ACCOUNT } from "../../queries/getAccount"
 
 export const TransactionForm = () => {
 
     const { data } = useQuery(GET_TRANSACTION_TYPES)
+
+    const [addTransaction] = useMutation(ADD_TRANSACTION, {
+        refetchQueries: [
+            GET_ACCOUNT
+        ]
+    })
 
     const [transactionType, setTransactionType] = useState('')
     const [transactionValue, setSetTransactionValue] = useState('')
 
     const createTransacion = (evt) => {
         evt.preventDefault()
-        console.log({
-            transactionType,
-            transactionValue
+
+        addTransaction({
+            variables: {
+                transaction: {
+                    type: transactionType,
+                    value: parseFloat(transactionValue)
+                }
+            }
         })
+        // console.log({
+        //     transactionType,
+        //     transactionValue
+        // })
     }
 
     return (
