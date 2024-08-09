@@ -6,9 +6,18 @@ import { FormLabel } from "../FormLabel";
 import { TextField } from "../TextField";
 import { Figure, Heading, Image } from "./styles";
 import PropTypes from 'prop-types';
+import { useMutation } from "@apollo/client";
+import { ADD_USER } from "../../mutations/addUser";
 
 export const FormRegister = ({ onRegister }) => {
     const [user, setUser] = useState({ name: '', email: '', password: '' });
+
+    const [ addUser ] = useMutation(ADD_USER, {
+        onCompleted: () => {
+            onRegister()
+        }
+    })
+
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -21,7 +30,11 @@ export const FormRegister = ({ onRegister }) => {
     const registerUser = (evt) => {
         evt.preventDefault();
         console.log(user);
-        onRegister()
+        addUser({
+            variables: {
+                user
+            }
+        })
     };
 
     return (

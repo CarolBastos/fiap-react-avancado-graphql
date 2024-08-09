@@ -6,10 +6,20 @@ import { FormLabel } from "../FormLabel";
 import { TextField } from "../TextField";
 import { Figure, Heading, Image } from "./styles";
 import PropTypes from 'prop-types';
+import { useMutation } from "@apollo/client";
+import { GET_TOKEN } from "../../mutations/getToken";
 
 export const FormLogin = ({ onLogin }) => {
     const [credentials, setCredentials] = useState({ email: '', password: '' });
 
+    const [ loginAttempt ] = useMutation(GET_TOKEN, {
+        onCompleted: (data) => {
+            console.log('token =>', data.login.accessToken)
+            sessionStorage.setItem('token', data.login.accessToken)
+            onLogin()
+        }
+    })
+    
     const handleChange = (e) => {
         const { name, value } = e.target;
         setCredentials((prevCredentials) => ({
@@ -20,8 +30,13 @@ export const FormLogin = ({ onLogin }) => {
 
     const loginUser = (evt) => {
         evt.preventDefault();
-        console.log(credentials);
-        onLogin()
+        // console.log(credentials);
+        loginAttempt({
+            variables: {
+                credentials
+            }
+        })
+        
     };
 
     return (
