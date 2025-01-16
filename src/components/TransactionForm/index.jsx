@@ -4,6 +4,7 @@ import { Button } from "../Button"
 import { useQuery } from "@apollo/client"
 import { GET_TRANSACTIONS_TYPES } from "../../queries/getTransactionsTypes"
 
+
 export const TransactionForm = () => {
 
     const {data, loading, error} = useQuery(GET_TRANSACTIONS_TYPES)
