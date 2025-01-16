@@ -4,6 +4,8 @@ import { Sidebar } from "./components/Sidebar"
 import { Account } from "./components/Account"
 import { TransactionForm } from "./components/TransactionForm"
 import { Statement } from "./components/Statement"
+import { GET_ACCOUNT } from "./queries/getAccount"
+import { useQuery } from "@apollo/client"
 
 const Container = styled.div`
   display: flex;
@@ -20,6 +22,16 @@ const Main = styled.main`
 `
 
 function App() {
+  const { data } = useQuery(GET_ACCOUNT);
+
+  const transactions = data?.account.transactions.map(t => {
+    return {
+      id: t._id,
+      value: t.value,
+      type: t.type,
+      date: new Date(t.createdAt)
+    }
+  }) ?? []
 
   return (
     <>
@@ -27,11 +39,11 @@ function App() {
       <Container>
         <Sidebar />
         <Main>
-          <Account />
+          <Account balance={data?.account.balance ?? 0}/>
           <TransactionForm />
         </Main>
         <div>
-          <Statement />
+          <Statement transactions={transactions}/>
         </div>
       </Container>
     </>
